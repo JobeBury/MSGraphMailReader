@@ -112,9 +112,12 @@ class Graph:
 
         return attachments_content
 
-    async def move_mail(self):
-        request_body = MovePostRequestBody(destination_id="Arch MS", )
+    async def move_mail(self, message_id):
 
-        move_mail = await self.user_client.me.messages.by_message_id('message_id').move.post(request_body)
-
+        request_body = MovePostRequestBody(destination_id="deleteditems")
+        move_mail = await self.user_client.me.messages.by_message_id(message_id).move.post(request_body)
         return move_mail
+
+    async def List_inboxes(self):
+        inbox_list = await self.user_client.me.mail_folders.get()
+        return inbox_list

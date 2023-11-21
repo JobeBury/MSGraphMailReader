@@ -47,6 +47,8 @@ async def main():
                 await list_users(graph)
             elif choice == 5:
                 await attachment_save(graph)
+            elif choice == 6:
+                await List_inbox(graph)
             else:
                 print('Invalid choice!\n')
         except ODataError as odata_error:
@@ -173,16 +175,28 @@ async def attachment_save(graph: Graph):
                                     with open(file_path, 'wb') as file:
                                         file.write(bytes(attachment_content_decoded))
                                     print(f"Attachment saved successfully at: {file_path}")
-
+                                    await graph.move_mail(message_id=message.id)
                                 else:
                                     print(message.subject, "'s Attachment is not a PDF")
+                                    await graph.move_mail(message_id=message.id)
+                            else:
+                                print(message.subject, "'s Attachment is not a PDF")
+                                await graph.move_mail(message_id=message.id)
                     else:
                         print(message.subject, 'has no attachments')
+                        await graph.move_mail(message_id=message.id)
                 else:
                     print(message.subject, "has no attachments")
+                    await graph.move_mail(message_id=message.id)
             else:
                 print(message.subject, "has already been read")
+                await graph.move_mail(message_id=message.id)
 
+
+async def List_inbox(graph: Graph):
+    inbox_list = await graph.List_inboxes()
+    Inbox_list = inbox_list.value
+    print(Inbox_list)
 
 # Run main
 asyncio.run(main())
